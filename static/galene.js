@@ -2866,24 +2866,15 @@ async function gotJoined(kind, group, perms, status, data, error, message) {
        ('getUserMedia' in navigator.mediaDevices) &&
        serverConnection.permissions.indexOf('present') >= 0 &&
        !findUpMedia('camera')) {
-        if(present) {
-            if(present === 'mike')
-                updateSettings({video: ''});
-            else if(present === 'both')
-                delSetting('video');
-            reflectSettings();
+        delSetting('video');
+        reflectSettings();
 
-            let button = getButtonElement('presentbutton');
-            button.disabled = true;
-            try {
-                await addLocalMedia();
-            } finally {
-                button.disabled = false;
-            }
-        } else {
-            displayMessage(
-                "Press Enable to enable your camera or microphone"
-            );
+        let button = getButtonElement('presentbutton');
+        button.disabled = true;
+        try {
+            await addLocalMedia();
+        } finally {
+            button.disabled = false;
         }
     }
 }
@@ -4330,14 +4321,7 @@ document.getElementById('loginform').onsubmit = async function(e) {
         throw new Error('Bad type for loginform');
 
     setVisibility('passwordform', true);
-
-    if(getInputElement('presentboth').checked)
-        presentRequested = 'both';
-    else if(getInputElement('presentmike').checked)
-        presentRequested = 'mike';
-    else
-        presentRequested = null;
-    getInputElement('presentoff').checked = true;
+    presentRequested = 'both';
 
     // Connect to the server, gotConnected will join.
     serverConnect();
